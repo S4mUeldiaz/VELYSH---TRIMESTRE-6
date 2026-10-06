@@ -1,0 +1,303 @@
+.perfil-wrapper {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px 64px;
+  font-family: var(--font-main);
+}
+
+.perfil-topbar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.perfil-titulo-pagina {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--color-text);
+}
+
+.perfil-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+}
+
+/* Secciones dentro de la card: cada bloque (datos, contraseña, zona de
+   peligro) queda separado por una línea + espacio generoso, en vez de
+   quedar todo apilado sin aire. */
+.perfil-seccion {
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.perfil-seccion:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.perfil-seccion-titulo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+.perfil-seccion-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-avatar {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.perfil-avatar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* El recorte circular vive aquí, no en .perfil-avatar — si el badge de la
+   cámara fuera hijo de un contenedor con overflow:hidden, la esquina donde
+   se posiciona (fuera del círculo inscrito en el cuadrado) se lo comería. */
+.perfil-avatar-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-input);
+  overflow: hidden;
+}
+
+.perfil-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-avatar-icon {
+  font-size: 40px;
+  color: var(--color-text-muted);
+}
+
+.perfil-avatar-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  border: 2px solid var(--color-bg-card);
+}
+
+.perfil-avatar-input {
+  display: none;
+}
+
+.perfil-avatar-link {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.perfil-avatar-link:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.perfil-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.perfil-label {
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.perfil-input {
+  background-color: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 14px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-family: var(--font-main);
+  outline: none;
+  transition: border-color var(--transition);
+  width: 100%;
+}
+
+.perfil-input:focus {
+  border-color: var(--color-primary);
+}
+
+.perfil-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.perfil-password-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.perfil-password-group .perfil-input {
+  padding-right: 48px;
+}
+
+.perfil-eye {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  transition: color var(--transition);
+}
+
+.perfil-eye:hover {
+  color: var(--color-text);
+}
+
+.perfil-mensaje {
+  font-size: 13px;
+  color: #6fcf97;
+  text-align: center;
+}
+
+.perfil-error {
+  font-size: 13px;
+  color: var(--color-error);
+  text-align: center;
+}
+
+.perfil-btn-guardar {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  padding: 13px;
+  border-radius: var(--border-radius);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  margin-top: 4px;
+}
+
+.perfil-btn-guardar:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.perfil-btn-guardar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.perfil-btn-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: 1px solid var(--color-error);
+  color: var(--color-error);
+  padding: 13px;
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+.perfil-btn-logout:hover {
+  opacity: 0.85;
+}
+
+/* Zona de peligro: deliberadamente discreta. Eliminar cuenta es
+   irreversible, así que no debe competir visualmente con "Guardar". */
+.perfil-zona-peligro-texto {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.perfil-btn-eliminar {
+  background: none;
+  border: none;
+  color: var(--color-error);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.85;
+  transition: opacity var(--transition);
+}
+
+.perfil-btn-eliminar:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .perfil-card { padding: 28px 24px; }
+}

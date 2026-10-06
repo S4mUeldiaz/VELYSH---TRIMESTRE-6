@@ -1,0 +1,216 @@
+.favoritos-wrapper {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  padding: 32px 80px 80px;
+}
+
+.favoritos-content {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.favoritos-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+
+.favoritos-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  flex: 1;
+}
+
+.favoritos-count {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.favoritos-loading,
+.favoritos-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 0;
+  color: var(--color-text-muted);
+}
+
+.favoritos-empty-icon {
+  font-size: 64px;
+  opacity: 0.3;
+}
+
+.favoritos-empty p {
+  font-size: 18px;
+}
+
+.favoritos-btn-catalogo {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  padding: 12px 32px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.favoritos-btn-catalogo:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.favoritos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.favoritos-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform var(--transition), border-color var(--transition);
+}
+
+.favoritos-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+}
+
+.favoritos-card-img {
+  position: relative;
+  height: 220px;
+  background: var(--color-bg-input);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favoritos-card-img img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  transition: transform var(--transition);
+}
+
+.favoritos-card:hover .favoritos-card-img img {
+  transform: scale(1.05);
+}
+
+.favoritos-card-heart {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: var(--color-bg);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition);
+}
+
+.favoritos-card-heart.active {
+  background: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.favoritos-card-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.favoritos-card-cat {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.favoritos-card-nombre {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.favoritos-card-precio {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.favoritos-card-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.favoritos-btn-carrito {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  flex: 1;
+  justify-content: center;
+}
+
+.favoritos-btn-carrito:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.favoritos-btn-eliminar {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.favoritos-btn-eliminar:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.favoritos-recomendaciones {
+  margin-top: 64px;
+  padding-top: 40px;
+  border-top: 1px solid var(--color-border);
+}
+
+.favoritos-recomendaciones-titulo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 24px;
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .favoritos-wrapper { padding: 24px; }
+  .favoritos-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}

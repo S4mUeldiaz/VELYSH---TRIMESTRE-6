@@ -1,0 +1,388 @@
+.detalle-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+.detalle-img-section {
+  flex: 1;
+  background: var(--color-bg-input);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.detalle-img-principal {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.detalle-img {
+  width: 92%;
+  max-width: 760px;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 40px rgba(230, 57, 70, 0.2));
+}
+
+/* Flechas de la galería: mismo tratamiento que los badges flotantes sobre
+   fotos de producto en el resto de la app (círculo oscuro translúcido +
+   ícono blanco), independiente del tema claro/oscuro de la página. */
+.detalle-galeria-flecha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-overlay);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color var(--transition);
+}
+
+.detalle-galeria-flecha:hover {
+  background: rgba(18, 18, 18, 0.75);
+}
+
+.detalle-galeria-flecha--prev {
+  left: 20px;
+}
+
+.detalle-galeria-flecha--next {
+  right: 20px;
+}
+
+.detalle-thumbs {
+  display: flex;
+  gap: 10px;
+  padding: 20px;
+  overflow-x: auto;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.detalle-thumb {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: var(--color-bg-card);
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+
+.detalle-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.detalle-thumb.active {
+  border-color: var(--color-primary);
+}
+
+.detalle-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--color-text-muted);
+  font-size: 18px;
+}
+
+.detalle-info {
+  flex: 1;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 550px;
+  background: var(--color-bg);
+}
+
+.detalle-nombre {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.detalle-precio {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.detalle-divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+.detalle-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detalle-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.detalle-colores {
+  display: flex;
+  gap: 12px;
+}
+
+.detalle-color-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.detalle-color-btn.active {
+  border-color: var(--color-primary);
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.detalle-select {
+  background-color: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+
+.detalle-select:focus {
+  border-color: var(--color-primary);
+}
+
+/* STEPPER DE CANTIDAD — pill redondeado, botones circulares a los
+   extremos y el número fijo en el centro, sin que nada se aplaste. */
+.detalle-cantidad {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: 50px;
+  padding: 4px;
+  gap: 4px;
+  width: fit-content;
+}
+
+.detalle-cantidad-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--color-text);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), opacity var(--transition);
+}
+
+.detalle-cantidad-btn:hover:not(:disabled) {
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.detalle-cantidad-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.detalle-cantidad-valor {
+  min-width: 32px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  font-family: var(--font-main);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.detalle-stock {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.detalle-btns {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.detalle-fav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  min-width: 48px;
+}
+
+.detalle-fav-btn:hover,
+.detalle-fav-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-bg);
+}
+
+.detalle-carrito-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-primary);
+  color: var(--color-bg);
+  border: none;
+  padding: 14px 32px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  flex: 1;
+  justify-content: center;
+}
+
+.detalle-carrito-btn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.detalle-carrito-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.detalle-descripcion {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
+.detalle-stock-bajo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-warning);
+  font-weight: 600;
+  animation: detalle-stock-bajo-pulse 1.8s ease-in-out infinite;
+}
+
+.detalle-stock-bajo svg {
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+@keyframes detalle-stock-bajo-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+.detalle-recomendados {
+  padding: 48px 80px 64px;
+  border-top: 1px solid var(--color-border);
+}
+
+.detalle-recomendados-titulo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0 0 24px;
+}
+
+.detalle-recomendados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.detalle-recomendado-card {
+  display: block;
+  color: inherit;
+}
+
+.detalle-recomendado-img {
+  height: 200px;
+  border-radius: 12px;
+  background-color: var(--color-bg-input);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.detalle-recomendado-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform var(--transition);
+}
+
+.detalle-recomendado-card:hover .detalle-recomendado-img img {
+  transform: scale(1.05);
+}
+
+.detalle-recomendado-nombre {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 4px;
+}
+
+.detalle-recomendado-precio {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .detalle-wrapper { flex-direction: column; }
+  .detalle-img-section { min-height: 300px; position: relative; }
+  .detalle-info { padding: 24px; max-width: 100%; }
+  .detalle-recomendados { padding: 32px 24px 48px; }
+}
