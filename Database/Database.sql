@@ -1,12 +1,14 @@
--- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
+--- tabla de tipo de documento ---
 CREATE TABLE public.tipo_documento (
   id_tipo_documento integer NOT NULL DEFAULT nextval('tipo_documento_id_tipo_documento_seq'::regclass),
   tipo USER-DEFINED NOT NULL UNIQUE,
   descripcion text NOT NULL DEFAULT ''::text,
   CONSTRAINT tipo_documento_pkey PRIMARY KEY (id_tipo_documento)
 );
+
+--- tabla de roles ---
 CREATE TABLE public.roles (
   id_rol integer NOT NULL DEFAULT nextval('roles_id_rol_seq'::regclass),
   nombre_rol character varying NOT NULL UNIQUE,
@@ -14,6 +16,8 @@ CREATE TABLE public.roles (
   fecha_creacion timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT roles_pkey PRIMARY KEY (id_rol)
 );
+
+--- tabla de usuarios ----
 CREATE TABLE public.usuarios (
   numero_documento character varying NOT NULL,
   id_tipo_documento integer NOT NULL,
@@ -31,6 +35,8 @@ CREATE TABLE public.usuarios (
   CONSTRAINT fk_usuarios_tipo_doc FOREIGN KEY (id_tipo_documento) REFERENCES public.tipo_documento(id_tipo_documento),
   CONSTRAINT fk_usuarios_rol FOREIGN KEY (id_rol) REFERENCES public.roles(id_rol)
 );
+
+--- tabla de direcciones ----
 CREATE TABLE public.direcciones (
   id_direccion integer NOT NULL DEFAULT nextval('direcciones_id_direccion_seq'::regclass),
   numero_documento character varying NOT NULL,
@@ -41,6 +47,8 @@ CREATE TABLE public.direcciones (
   CONSTRAINT direcciones_pkey PRIMARY KEY (id_direccion),
   CONSTRAINT fk_direcciones_usuario FOREIGN KEY (numero_documento) REFERENCES public.usuarios(numero_documento)
 );
+
+---- tabla de categorias ---
 CREATE TABLE public.categorias (
   id_categoria integer NOT NULL DEFAULT nextval('categorias_id_categoria_seq'::regclass),
   nombre_categoria character varying NOT NULL UNIQUE,
@@ -50,6 +58,8 @@ CREATE TABLE public.categorias (
   fecha_creacion timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT categorias_pkey PRIMARY KEY (id_categoria)
 );
+
+----tabla de productos ----
 CREATE TABLE public.productos (
   id_producto integer NOT NULL DEFAULT nextval('productos_id_producto_seq'::regclass),
   id_categoria integer NOT NULL,
@@ -65,6 +75,8 @@ CREATE TABLE public.productos (
   CONSTRAINT productos_pkey PRIMARY KEY (id_producto),
   CONSTRAINT fk_productos_categoria FOREIGN KEY (id_categoria) REFERENCES public.categorias(id_categoria)
 );
+
+--- tabla de imagenes_productos ----
 CREATE TABLE public.imagenes_producto (
   id_imagen integer NOT NULL DEFAULT nextval('imagenes_producto_id_imagen_seq'::regclass),
   id_producto integer NOT NULL,
@@ -75,12 +87,16 @@ CREATE TABLE public.imagenes_producto (
   CONSTRAINT imagenes_producto_pkey PRIMARY KEY (id_imagen),
   CONSTRAINT fk_imagenes_producto FOREIGN KEY (id_producto) REFERENCES public.productos(id_producto)
 );
+
+---- tabla de tallas ---
 CREATE TABLE public.tallas (
   id_talla integer NOT NULL DEFAULT nextval('tallas_id_talla_seq'::regclass),
   talla character varying NOT NULL UNIQUE,
   orden integer NOT NULL DEFAULT 0,
   CONSTRAINT tallas_pkey PRIMARY KEY (id_talla)
 );
+
+---- tabla de stock ----
 CREATE TABLE public.stock (
   id_stock integer NOT NULL DEFAULT nextval('stock_id_stock_seq'::regclass),
   id_producto integer NOT NULL,
@@ -96,6 +112,8 @@ CREATE TABLE public.stock (
   CONSTRAINT fk_stock_producto FOREIGN KEY (id_producto) REFERENCES public.productos(id_producto),
   CONSTRAINT fk_stock_talla FOREIGN KEY (id_talla) REFERENCES public.tallas(id_talla)
 );
+
+--- tabla de pedidos ---
 CREATE TABLE public.pedidos (
   id_pedido integer NOT NULL DEFAULT nextval('pedidos_id_pedido_seq'::regclass),
   numero_documento character varying NOT NULL,
@@ -114,6 +132,8 @@ CREATE TABLE public.pedidos (
   CONSTRAINT fk_pedidos_usuario FOREIGN KEY (numero_documento) REFERENCES public.usuarios(numero_documento),
   CONSTRAINT fk_pedidos_direccion FOREIGN KEY (id_direccion) REFERENCES public.direcciones(id_direccion)
 );
+
+--- tabla de factura ---
 CREATE TABLE public.factura (
   id_detalle integer NOT NULL DEFAULT nextval('factura_id_detalle_seq'::regclass),
   id_pedido integer NOT NULL,
@@ -125,6 +145,8 @@ CREATE TABLE public.factura (
   CONSTRAINT fk_detalle_pedido FOREIGN KEY (id_pedido) REFERENCES public.pedidos(id_pedido),
   CONSTRAINT fk_detalle_stock FOREIGN KEY (id_stock) REFERENCES public.stock(id_stock)
 );
+
+---- tabla de devoluciones ----
 CREATE TABLE public.devoluciones (
   id_devolucion integer NOT NULL DEFAULT nextval('devoluciones_id_devolucion_seq'::regclass),
   id_pedido integer NOT NULL,
@@ -137,6 +159,8 @@ CREATE TABLE public.devoluciones (
   CONSTRAINT fk_devolucion_pedido FOREIGN KEY (id_pedido) REFERENCES public.pedidos(id_pedido),
   CONSTRAINT fk_devolucion_detalle FOREIGN KEY (id_detalle_pedido) REFERENCES public.factura(id_detalle)
 );
+
+--- tabla de movimientos_inventario ----
 CREATE TABLE public.movimientos_inventario (
   id_movimiento integer NOT NULL DEFAULT nextval('movimientos_inventario_id_movimiento_seq'::regclass),
   id_stock integer NOT NULL,
@@ -154,6 +178,8 @@ CREATE TABLE public.movimientos_inventario (
   CONSTRAINT fk_movimiento_pedido FOREIGN KEY (id_pedido) REFERENCES public.pedidos(id_pedido),
   CONSTRAINT fk_movimiento_usuario FOREIGN KEY (numero_documento) REFERENCES public.usuarios(numero_documento)
 );
+
+---- tabla de favoritos ---
 CREATE TABLE public.favoritos (
   id_favorito integer NOT NULL DEFAULT nextval('favoritos_id_favorito_seq'::regclass),
   numero_documento character varying NOT NULL,
