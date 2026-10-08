@@ -1,0 +1,469 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  StyleSheet,
+  ToastAndroid,
+  Platform,
+  Alert,
+  Modal,
+} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import { BackButton } from '../../components/BackButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { registrar, RegistroPayload } from '../../../Data/sources/remote/api/Authapi';
+import { colors, fonts, spacing } from '../../theme/AppTheme';
+import { validarNumeroDocumento } from '../../utils/validarDocumento';
+
+type RegisterForm = RegistroPayload;
+
+const TIPOS_DOCUMENTO = [
+  { label: 'Cédula', value: 1 },
+  { label: 'C. extranjería', value: 2 },
+  { label: 'T. identidad', value: 3 },
+  { label: 'Pasaporte', value: 4 },
+  { label: 'NIT', value: 5 },
+];
+
+export function RegisterScreen() {
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+
+  const [form, setForm] = useState<RegisterForm>({
+    numero_documento: '',
+    id_tipo_documento: 1,
+    nombre: '',
+    apellido: '',
+    correo: '',
+    telefono: '',
+    password: '',
+    id_rol: 2,
+  });
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [verPassword, setVerPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [cargando, setCargando] = useState(false);
+  const [tipoDocModalVisible, setTipoDocModalVisible] = useState(false);
+
+  const tipoDocSeleccionado = TIPOS_DOCUMENTO.find((t) => t.value === form.id_tipo_documento);
+
+  function handleChange(campo: keyof RegisterForm, valor: string | number) {
+    setForm((prev) => ({ ...prev, [campo]: valor }));
+  }
+
+  function mostrarError(msg: string) {
+    setError(msg);
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(msg, ToastAndroid.LONG);
+    } else {
+      Alert.alert('Error', msg);
+    }
+  }
+
+  async function handleSubmit() {
+    setError('');
+
+    const validacionDocumento = validarNumeroDocumento(
+      form.numero_documento,
+      form.id_tipo_documento
+    );
+    if (!validacionDocumento.valido) {
+      mostrarError(validacionDocumento.mensaje);
+      return;
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.nombre)) {
+      mostrarError('El nombre solo puede contener letras');
+      return;
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(form.apellido)) {
+      mostrarError('El apellido solo puede contener letras');
+      return;
+    }
+    if (!/^\d+$/.test(form.telefono)) {
+      mostrarError('El teléfono solo puede contener números');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.correo)) {
+      mostrarError('Ingresa un correo electrónico válido');
+      return;
+    }
+    if (form.password !== confirmPassword) {
+      mostrarError('Las contraseñas no coinciden');
+      return;
+    }
+
+    setCargando(true);
+    try {
+      await registrar(form);
+      navigation.navigate('LoginScreen' as never);
+    } catch (err: any) {
+      mostrarError(
+        err?.response?.data?.error || err?.message || 'No se pudo completar el registro'
+      );
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  return (
+    <ScrollView
+      style={styles.wrapper}
+      contentContainerStyle={[styles.wrapperContent, { paddingTop: insets.top + spacing.lg }]}
+    >
+      <View style={styles.topbar}>
+        <BackButton />
+      </View>
+
+      <Image
+        source={require('../../../../assets/brand/wordmark.png')}
+        style={styles.logo}
+        resizeMode="contain"
+        accessibilityLabel="VELYSH"
+      />
+
+      <Text style={styles.title}>¿Deseas registrarte?</Text>
+
+      <View style={styles.card}>
+        <View style={styles.row}>
+          <View style={[styles.field, { flex: 0.8 }]}>
+            <Text style={styles.label}>Tipo doc.</Text>
+            <TouchableOpacity
+              style={styles.group}
+              onPress={() => setTipoDocModalVisible(true)}
+              activeOpacity={0.7}
+            >
+              <Feather
+                name="credit-card"
+                size={16}
+                color={colors.textMuted}
+                style={styles.icon}
+              />
+              <Text style={styles.selectValue} numberOfLines={1}>
+                {tipoDocSeleccionado?.label}
+              </Text>
+              <Feather name="chevron-down" size={16} color={colors.textMuted} />
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.field, { flex: 1 }]}>
+            <Text style={styles.label}>Número documento</Text>
+            <View style={styles.group}>
+              <Feather
+                name="credit-card"
+                size={16}
+                color={colors.textMuted}
+                style={styles.icon}
+              />
+              <TextInput
+                style={styles.input}
+                value={form.numero_documento}
+                onChangeText={(v) => handleChange('numero_documento', v)}
+                placeholder="0000000000"
+                placeholderTextColor={colors.textMuted}
+                keyboardType={form.id_tipo_documento === 4 ? 'default' : 'number-pad'}
+                autoCapitalize="characters"
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.row}>
+          <View style={styles.field}>
+            <Text style={styles.label}>Nombres</Text>
+            <View style={styles.group}>
+              <Feather name="user" size={16} color={colors.textMuted} style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                value={form.nombre}
+                onChangeText={(v) => handleChange('nombre', v)}
+                placeholder="Nombre"
+                placeholderTextColor={colors.textMuted}
+              />
+            </View>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Apellidos</Text>
+            <View style={styles.group}>
+              <Feather name="user" size={16} color={colors.textMuted} style={styles.icon} />
+              <TextInput
+                style={styles.input}
+                value={form.apellido}
+                onChangeText={(v) => handleChange('apellido', v)}
+                placeholder="Apellido"
+                placeholderTextColor={colors.textMuted}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Nro. celular</Text>
+          <View style={styles.group}>
+            <Feather name="phone" size={16} color={colors.textMuted} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={form.telefono}
+              onChangeText={(v) => handleChange('telefono', v)}
+              placeholder="300 000 0000"
+              placeholderTextColor={colors.textMuted}
+              keyboardType="number-pad"
+              maxLength={10}
+            />
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Correo electrónico</Text>
+          <View style={styles.group}>
+            <Feather name="mail" size={16} color={colors.textMuted} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={form.correo}
+              onChangeText={(v) => handleChange('correo', v)}
+              placeholder="tu@correo.com"
+              placeholderTextColor={colors.textMuted}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Contraseña</Text>
+          <View style={styles.group}>
+            <Feather name="lock" size={16} color={colors.textMuted} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={form.password}
+              onChangeText={(v) => handleChange('password', v)}
+              placeholder="••••••••"
+              placeholderTextColor={colors.textMuted}
+              secureTextEntry={!verPassword}
+            />
+            <TouchableOpacity onPress={() => setVerPassword((prev) => !prev)}>
+              <Feather
+                name={verPassword ? 'eye-off' : 'eye'}
+                size={16}
+                color={colors.textMuted}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>Confirmación de contraseña</Text>
+          <View style={styles.group}>
+            <Feather name="lock" size={16} color={colors.textMuted} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="••••••••"
+              placeholderTextColor={colors.textMuted}
+              secureTextEntry={!verPassword}
+            />
+          </View>
+        </View>
+
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+
+        <TouchableOpacity
+          style={[styles.button, cargando && styles.buttonDisabled]}
+          onPress={handleSubmit}
+          disabled={cargando}
+        >
+          <Text style={styles.buttonText}>
+            {cargando ? 'REGISTRANDO...' : 'REGISTRARME'}
+          </Text>
+        </TouchableOpacity>
+
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>¿Ya tienes cuenta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen' as never)}>
+            <Text style={styles.footerLink}>Inicia sesión</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <Modal
+        visible={tipoDocModalVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setTipoDocModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setTipoDocModalVisible(false)}
+        >
+          <TouchableOpacity style={styles.modalSheet} activeOpacity={1}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity onPress={() => setTipoDocModalVisible(false)}>
+                <Text style={styles.modalDone}>Listo</Text>
+              </TouchableOpacity>
+            </View>
+            <Picker
+              selectedValue={form.id_tipo_documento}
+              onValueChange={(valor) => handleChange('id_tipo_documento', valor)}
+            >
+              {TIPOS_DOCUMENTO.map((tipo) => (
+                <Picker.Item key={tipo.value} label={tipo.label} value={tipo.value} />
+              ))}
+            </Picker>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  wrapperContent: {
+    paddingHorizontal: 24,
+    paddingBottom: 64,
+    alignItems: 'center',
+  },
+  topbar: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  logo: {
+    width: 200,
+    height: 70,
+    marginBottom: 32,
+  },
+  title: {
+    fontFamily: fonts.display,
+    fontSize: 24,
+    color: colors.text,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 32,
+  },
+  card: {
+    backgroundColor: colors.backgroundCard,
+    borderRadius: 20,
+    padding: 28,
+    width: '100%',
+    maxWidth: 420,
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  field: {
+    marginBottom: 18,
+    flex: 1,
+    minWidth: 0,
+  },
+  label: {
+    fontSize: 11,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    color: colors.textMuted,
+    marginBottom: 8,
+    fontFamily: fonts.body,
+  },
+  group: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundInput,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
+    color: colors.text,
+    paddingVertical: 12,
+    fontSize: 14,
+    fontFamily: fonts.body,
+  },
+  selectValue: {
+    flex: 1,
+    color: colors.text,
+    paddingVertical: 12,
+    fontSize: 14,
+    fontFamily: fonts.body,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: colors.backgroundCard,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 24,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  modalDone: {
+    color: colors.primary,
+    fontFamily: fonts.bodySemiBold,
+    fontSize: 14,
+  },
+  error: {
+    color: colors.error,
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    color: colors.onPrimary,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 1,
+    fontFamily: fonts.body,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  footerText: {
+    fontSize: 13,
+    color: colors.textMuted,
+    fontFamily: fonts.body,
+  },
+  footerLink: {
+    fontSize: 13,
+    color: colors.text,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+    fontFamily: fonts.body,
+  },
+});

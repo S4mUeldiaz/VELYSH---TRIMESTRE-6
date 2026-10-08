@@ -1,0 +1,25 @@
+{
+  "name": "backend_appmovil",
+  "version": "1.0.0",
+  "description": "Backend de la AppMovil React-Native",
+  "keywords": [
+    "ReactNative",
+    "NodeJS"
+  ],
+  "license": "MIT",
+  "author": "VELYSH",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.11.0",
+    "multer": "^2.4.0"
+  }
+}
